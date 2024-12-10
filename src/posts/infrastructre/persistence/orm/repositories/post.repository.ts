@@ -9,7 +9,7 @@ import { PostMapper } from '../mappers/post.mapper';
 @Injectable()
 export class OrmPostRepository implements PostRepository {
   constructor(
-    @InjectRepository(PostRepository)
+    @InjectRepository(PostEntity)
     private readonly postRepository: Repository<PostEntity>,
   ) {}
 
