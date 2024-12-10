@@ -1,6 +1,5 @@
-export class Post {
+export class CreatePostCommand {
   constructor(
-    public id: string,
     public title: string,
     public description: string,
   ) {}
