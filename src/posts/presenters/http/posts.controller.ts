@@ -10,7 +10,7 @@ import {
 import { PostsService } from '../../application/posts.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
-import { CreatePostCommand } from '../../application/comamnds/create-post.command';
+import { CreatePostCommand } from '../../application/commands/create-post.command';
 
 @Controller('posts')
 export class PostsController {
