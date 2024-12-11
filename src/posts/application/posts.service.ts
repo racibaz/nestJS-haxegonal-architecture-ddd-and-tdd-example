@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { UpdatePostDto } from '../presenters/http/dto/update-post.dto';
-import { CreatePostCommand } from './comamnds/create-post.command';
+import { CreatePostCommand } from './commands/create-post.command';
 import { PostRepository } from './ports/post.repository';
 import { PostFactory } from '../domain/factoies/post.factory';
 
