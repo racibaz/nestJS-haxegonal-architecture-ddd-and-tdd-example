@@ -6,7 +6,7 @@ import { AppService } from './app.service';
 import { PostsModule } from './posts/application/posts.module';
 import { CoreModule } from './core/core.module';
 import { ApplicationBootstrapOptions } from './posts/common/interface/application-bootstap-options';
-import { PostsInfrastructureModule } from './posts/infrastructre/posts-infrastructure.module';
+import { PostsInfrastructureModule } from './posts/infrastructure/posts-infrastructure.module';
 import { ConfigModule } from '@nestjs/config';
 
 import appConfig from './config/app.config';
