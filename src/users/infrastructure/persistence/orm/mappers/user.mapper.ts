@@ -15,6 +15,7 @@ export class UserMapper {
     const entity = new UserEntity();
     entity.id = user.id;
     entity.name = user.name;
+    entity.email = user.email;
     entity.password = user.password;
     return entity;
   }
