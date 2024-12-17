@@ -1,8 +1,7 @@
 import { DynamicModule, Module, Type } from '@nestjs/common';
 import { PostsService } from './posts.service';
 import { PostsController } from '../presenters/http/posts.controller';
-import { PostFactory } from '../domain/factoies/post.factory';
-
+import { PostFactory } from '../domain/factories/post.factory';
 
 @Module({
   controllers: [PostsController],

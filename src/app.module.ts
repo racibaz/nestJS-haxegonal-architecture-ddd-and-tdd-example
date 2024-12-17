@@ -8,6 +8,8 @@ import { CoreModule } from './core/core.module';
 import { ApplicationBootstrapOptions } from './posts/common/interface/application-bootstap-options';
 import { PostsInfrastructureModule } from './posts/infrastructure/posts-infrastructure.module';
 import { ConfigModule } from '@nestjs/config';
+import { UsersService } from './users/application/users.service';
+import { UsersModule } from './users/application/users.module';
 
 import appConfig from './config/app.config';
 import databaseConfig from './config/database.config';
@@ -26,9 +28,10 @@ const ENV = process.env.NODE_ENV;
       load: [appConfig, databaseConfig],
       validationSchema: environmentValidation,
     }),
+    UsersModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, UsersService],
 })
 export class AppModule {
   static register(options: ApplicationBootstrapOptions) {
