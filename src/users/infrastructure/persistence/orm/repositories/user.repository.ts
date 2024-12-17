@@ -18,8 +18,8 @@ export class OrmUserRepository implements UserRepository {
     return entities.map((item) => UserMapper.toDomain(item));
   }
 
-  async save(post: User): Promise<User> {
-    const persistenceModel = UserMapper.toPersistence(post);
+  async save(user: User): Promise<User> {
+    const persistenceModel = UserMapper.toPersistence(user);
     const newEntity = await this.userRepository.save(persistenceModel);
     return UserMapper.toDomain(newEntity);
   }
