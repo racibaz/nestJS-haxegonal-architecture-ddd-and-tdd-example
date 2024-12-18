@@ -10,6 +10,7 @@ import { PostsInfrastructureModule } from './posts/infrastructure/posts-infrastr
 import { ConfigModule } from '@nestjs/config';
 import { UsersService } from './users/application/users.service';
 import { UsersModule } from './users/application/users.module';
+import { AuthModule } from './auth/application/auth.module';
 
 import appConfig from './config/app.config';
 import databaseConfig from './config/database.config';
@@ -29,6 +30,7 @@ const ENV = process.env.NODE_ENV;
       validationSchema: environmentValidation,
     }),
     UsersModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService, UsersService],

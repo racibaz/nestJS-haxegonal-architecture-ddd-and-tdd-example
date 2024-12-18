@@ -3,14 +3,14 @@ import { UsersService } from './users.service';
 import { UsersController } from '../presenters/http/users.controller';
 import { UserFactory } from '../domain/factories/user.factory';
 import { OrmUserPersistenceModule } from '../infrastructure/persistence/orm/orm-persistence.module';
-import { AuthController } from '../presenters/http/auth.controller';
-import { AuthService } from './auth-service';
-import { HasherService } from './hasher-service';
+import { HasherService } from '../../auth/application/hasher-service';
+import { UserEntity } from '../infrastructure/persistence/orm/entities/user.entity';
+import { User } from '../domain/user';
 
 @Module({
-  controllers: [UsersController, AuthController],
-  providers: [UsersService, AuthService, HasherService, UserFactory],
+  controllers: [UsersController],
+  providers: [UsersService, HasherService, UserFactory, User, UserEntity],
   imports: [OrmUserPersistenceModule],
-  exports: [OrmUserPersistenceModule, UserFactory],
+  exports: [OrmUserPersistenceModule, UserFactory, User, UserEntity],
 })
 export class UsersModule {}

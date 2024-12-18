@@ -11,7 +11,7 @@ export class AuthController {
 
   @Post('register')
   register(@Body() registerUserDto: RegisterUserDto) {
-    return this.authService.create(
+    return this.authService.register(
       new RegisterUserCommand(
         registerUserDto.name,
         registerUserDto.email,

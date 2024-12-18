@@ -1,32 +1,26 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { HasherService } from './hasher-service';
-import { CreateUserCommand } from './commands/create-user.command';
 import { LoginUserCommand } from './commands/login-user.command';
-import * as bcrypt from 'bcrypt';
-import { InjectRepository } from '@nestjs/typeorm';
-import { UserEntity } from '../infrastructure/persistence/orm/entities/user.entity';
-import { Repository } from 'typeorm';
+import { RegisterUserCommand } from './commands/register-user.command';
+import { AuthRepository } from './ports/auth.repository';
 
 @Injectable()
 export class AuthService {
   constructor(
-    private readonly userRepository: Repository<UserEntity>,
+    private readonly authRepository: AuthRepository,
     private readonly hasherService: HasherService,
   ) {}
 
-  async create(createUserCommand: CreateUserCommand) {
-    const isUserExist = this.userRepository.find({
-      where: {
-        email: createUserCommand.email,
-      },
-    });
+  async register(registerUserCommand: RegisterUserCommand) {
+    const isUserExist = this.authRepository.isUserExist(
+      registerUserCommand.email,
+    );
 
     console.log(isUserExist);
 
-    createUserCommand.password = await this.hasherService.hashPassword(
+/*    createUserCommand.password = await this.hasherService.hashPassword(
       createUserCommand.password,
-    );
-
+    );*/
 
     //const user = await this.userRepository.create(createUserCommand);
   }
