@@ -61,7 +61,5 @@ export class AuthService {
     if (!isMatch) {
       throw new UnauthorizedException('The email or password does not match');
     }
-
-
   }
 }
