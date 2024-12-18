@@ -19,7 +19,7 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "doc": "npx @compodoc/compodoc -p tsconfig.json -s --watch -d ./documentation --port 3002",
-    "seed": "ts-node /src/posts/infrastructure/persistence/orm/seeders/seed.ts",
+    "seed": "ts-node /src/modules/posts/infrastructure/persistence/orm/seeders/seed.ts",
     "db:create": "ts-node ./node_modules/typeorm-extension/bin/cli.cjs db:create",
     "db:drop": "ts-node ./node_modules/typeorm-extension/bin/cli.cjs db:drop",
     "seed:run": "ts-node ./node_modules/typeorm-extension/bin/cli.cjs seed:run",
