@@ -1,39 +1,67 @@
-import { Injectable } from '@nestjs/common';
+import {
+  HttpCode,
+  HttpException,
+  HttpStatus,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { HasherService } from './hasher-service';
 import { LoginUserCommand } from './commands/login-user.command';
 import { RegisterUserCommand } from './commands/register-user.command';
 import { AuthRepository } from './ports/auth.repository';
+import { UserFactory } from '../../users/domain/factories/user.factory';
+import { UserEntity } from '../../users/infrastructure/persistence/orm/entities/user.entity';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly authRepository: AuthRepository,
     private readonly hasherService: HasherService,
+    private readonly userFactory: UserFactory,
   ) {}
 
   async register(registerUserCommand: RegisterUserCommand) {
-    const isUserExist = this.authRepository.isUserExist(
+    const isUserExist = await this.authRepository.isUserExist(
       registerUserCommand.email,
     );
 
-    console.log(isUserExist);
+    if (isUserExist) {
+      throw new HttpException('User already exists', HttpStatus.NOT_FOUND);
+    }
 
-/*    createUserCommand.password = await this.hasherService.hashPassword(
-      createUserCommand.password,
-    );*/
+    registerUserCommand.password = await this.hasherService.hashPassword(
+      registerUserCommand.password,
+    );
 
-    //const user = await this.userRepository.create(createUserCommand);
+    const user = this.userFactory.create(
+      registerUserCommand.name,
+      registerUserCommand.email,
+      registerUserCommand.password,
+    );
+
+    return await this.authRepository.save(user);
   }
 
+  @HttpCode(HttpStatus.OK)
   async login(loginUserCommand: LoginUserCommand) {
-    //const xx = this.usersService.findAll();
-    /*    const isMatch = await bcrypt.compare(
+    const user: UserEntity | null = await this.authRepository.findBy(
+      loginUserCommand.email,
+    );
+
+    if (!user) {
+      throw new UnauthorizedException('The email or password does not match');
+    }
+
+    const isMatch = await bcrypt.compare(
       loginUserCommand.password,
       user?.password,
     );
 
     if (!isMatch) {
-      throw new UnauthorizedException('The password does not match');
-    }*/
+      throw new UnauthorizedException('The email or password does not match');
+    }
+
+
   }
 }

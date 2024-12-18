@@ -6,11 +6,25 @@ import { OrmUserPersistenceModule } from '../infrastructure/persistence/orm/orm-
 import { HasherService } from '../../auth/application/hasher-service';
 import { UserEntity } from '../infrastructure/persistence/orm/entities/user.entity';
 import { User } from '../domain/user';
+import { UserMapper } from '../infrastructure/persistence/orm/mappers/user.mapper';
 
 @Module({
   controllers: [UsersController],
-  providers: [UsersService, HasherService, UserFactory, User, UserEntity],
+  providers: [
+    UsersService,
+    HasherService,
+    UserFactory,
+    User,
+    UserEntity,
+    UserMapper,
+  ],
   imports: [OrmUserPersistenceModule],
-  exports: [OrmUserPersistenceModule, UserFactory, User, UserEntity],
+  exports: [
+    OrmUserPersistenceModule,
+    UserFactory,
+    User,
+    UserEntity,
+    UserMapper,
+  ],
 })
 export class UsersModule {}
