@@ -5,6 +5,7 @@ import {
   HttpStatus,
   Inject,
   Injectable,
+  RequestTimeoutException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { LoginUserCommand } from './commands/login-user.command';
@@ -12,8 +13,10 @@ import { RegisterUserCommand } from './commands/register-user.command';
 import { AuthRepository } from './ports/auth.repository';
 import { UserFactory } from '../../users/domain/factories/user.factory';
 import { UserEntity } from '../../users/infrastructure/persistence/orm/entities/user.entity';
-import * as bcrypt from 'bcrypt';
 import { HashingProvider } from './ports/hashing.provider';
+import { JwtService } from '@nestjs/jwt';
+import jwtConfig from '../config/jwt.config';
+import { ConfigType } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
@@ -22,9 +25,12 @@ export class AuthService {
     private readonly userFactory: UserFactory,
     @Inject(forwardRef(() => HashingProvider))
     private readonly hashingProvider: HashingProvider,
+    private readonly jwtService: JwtService,
+    @Inject(jwtConfig.KEY)
+    private readonly jwtConfiguration: ConfigType<typeof jwtConfig>,
   ) {}
 
-  async register(registerUserCommand: RegisterUserCommand) {
+  public async register(registerUserCommand: RegisterUserCommand) {
     const isUserExist = await this.authRepository.isUserExist(
       registerUserCommand.email,
     );
@@ -46,9 +52,8 @@ export class AuthService {
     return await this.authRepository.save(user);
   }
 
-  @HttpCode(HttpStatus.OK)
-  async login(loginUserCommand: LoginUserCommand) {
-    const user: UserEntity | null = await this.authRepository.findBy(
+  public async login(loginUserCommand: LoginUserCommand) {
+    const user: UserEntity | null = await this.authRepository.findByOneEmail(
       loginUserCommand.email,
     );
 
@@ -56,13 +61,40 @@ export class AuthService {
       throw new UnauthorizedException('The email or password does not match');
     }
 
-    const isMatch = await this.hashingProvider.comparePassword(
-      loginUserCommand.password,
-      user?.password,
-    );
+    let isMatch: boolean = false;
+
+    try {
+      isMatch = await this.hashingProvider.comparePassword(
+        loginUserCommand.password,
+        user?.password,
+      );
+    } catch (error) {
+      throw new RequestTimeoutException(error, {
+        description: 'Password not match',
+      });
+    }
 
     if (!isMatch) {
       throw new UnauthorizedException('The email or password does not match');
     }
+
+    // Generate access token
+    const accessToken = await this.jwtService.signAsync(
+      {
+        sub: user.id,
+        email: user.email,
+      },
+      {
+        audience: this.jwtConfiguration.audience,
+        issuer: this.jwtConfiguration.issuer,
+        secret: this.jwtConfiguration.secret,
+        expiresIn: this.jwtConfiguration.accessTokenTtl,
+      },
+    );
+
+    // Return Access token
+    return {
+      accessToken,
+    };
   }
 }

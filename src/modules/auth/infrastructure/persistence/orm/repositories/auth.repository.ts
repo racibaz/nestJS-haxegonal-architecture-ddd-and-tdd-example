@@ -13,17 +13,16 @@ export class OrmAuthRepository implements AuthRepository {
     private readonly authRepository: Repository<UserEntity>,
   ) {}
 
-  async findBy(email: string): Promise<UserEntity | null> {
+  public async findByOneEmail(email: string): Promise<UserEntity | null> {
     return await this.authRepository.findOne({ where: { email } });
   }
 
-  async isUserExist(email: string): Promise<boolean> {
+  public async isUserExist(email: string): Promise<boolean> {
     const user = await this.authRepository.findOne({ where: { email } });
-    console.log('user', user);
     return !!user;
   }
 
-  async save(user: User): Promise<User> {
+  public async save(user: User): Promise<User> {
     const persistenceModel = UserMapper.toPersistence(user);
     const newEntity = await this.authRepository.save(persistenceModel);
     return UserMapper.toDomain(newEntity);

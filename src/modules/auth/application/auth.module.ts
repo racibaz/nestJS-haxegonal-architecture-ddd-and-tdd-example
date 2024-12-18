@@ -7,6 +7,9 @@ import { OrmAuthPersistenceModule } from '../infrastructure/orm-persistence.modu
 import { UserMapper } from '../../users/infrastructure/persistence/orm/mappers/user.mapper';
 import { HashingProvider } from './ports/hashing.provider';
 import { BcryptProvider } from '../infrastructure/persistence/hashing/bcrypt.provider';
+import { JwtModule } from '@nestjs/jwt';
+import { ConfigModule } from '@nestjs/config';
+import jwtConfig from '../config/jwt.config';
 
 @Module({
   controllers: [AuthController],
@@ -17,7 +20,14 @@ import { BcryptProvider } from '../infrastructure/persistence/hashing/bcrypt.pro
       useClass: BcryptProvider,
     },
   ],
-  imports: [OrmAuthPersistenceModule, UsersModule, User, UserMapper],
+  imports: [
+    OrmAuthPersistenceModule,
+    UsersModule,
+    ConfigModule.forFeature(jwtConfig),
+    JwtModule.registerAsync(jwtConfig.asProvider()),
+    User,
+    UserMapper,
+  ],
   exports: [OrmAuthPersistenceModule],
 })
 export class AuthModule {}
