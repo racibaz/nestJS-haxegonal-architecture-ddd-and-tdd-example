@@ -17,7 +17,7 @@ export class UsersService {
       createUserCommand.email,
       createUserCommand.password,
     );
-
+    //todo it should make hashing password
     return this.userRepository.save(user);
   }
 

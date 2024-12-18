@@ -1,24 +1,27 @@
 import {
+  forwardRef,
   HttpCode,
   HttpException,
   HttpStatus,
+  Inject,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
-import { HasherService } from './hasher-service';
 import { LoginUserCommand } from './commands/login-user.command';
 import { RegisterUserCommand } from './commands/register-user.command';
 import { AuthRepository } from './ports/auth.repository';
 import { UserFactory } from '../../users/domain/factories/user.factory';
 import { UserEntity } from '../../users/infrastructure/persistence/orm/entities/user.entity';
 import * as bcrypt from 'bcrypt';
+import { HashingProvider } from './ports/hashing.provider';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly authRepository: AuthRepository,
-    private readonly hasherService: HasherService,
     private readonly userFactory: UserFactory,
+    @Inject(forwardRef(() => HashingProvider))
+    private readonly hashingProvider: HashingProvider,
   ) {}
 
   async register(registerUserCommand: RegisterUserCommand) {
@@ -30,7 +33,7 @@ export class AuthService {
       throw new HttpException('User already exists', HttpStatus.NOT_FOUND);
     }
 
-    registerUserCommand.password = await this.hasherService.hashPassword(
+    registerUserCommand.password = await this.hashingProvider.hashPassword(
       registerUserCommand.password,
     );
 
@@ -53,7 +56,7 @@ export class AuthService {
       throw new UnauthorizedException('The email or password does not match');
     }
 
-    const isMatch = await bcrypt.compare(
+    const isMatch = await this.hashingProvider.comparePassword(
       loginUserCommand.password,
       user?.password,
     );
