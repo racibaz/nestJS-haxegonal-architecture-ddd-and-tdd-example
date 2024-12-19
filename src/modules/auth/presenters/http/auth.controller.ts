@@ -1,15 +1,18 @@
-import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import { Body, Controller, HttpCode, HttpStatus, Post, SetMetadata } from '@nestjs/common';
 import { AuthService } from '../../application/auth-service';
 import { RegisterUserDto } from './dto/register-user.dto';
 import { RegisterUserCommand } from '../../application/commands/register-user.command';
 import { LoginUserDto } from './dto/login-user.dto';
 import { LoginUserCommand } from '../../application/commands/login-user.command';
+import { Auth } from '../../application/decorators/auth/auth.decorator';
+import { AuthType } from '../../domain/enums/auth-type.enum';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('register')
+  @Auth(AuthType.None)
   public register(@Body() registerUserDto: RegisterUserDto) {
     return this.authService.register(
       new RegisterUserCommand(
@@ -21,6 +24,7 @@ export class AuthController {
   }
 
   @Post('login')
+  @Auth(AuthType.None)
   @HttpCode(HttpStatus.OK)
   public login(@Body() loginUserDto: LoginUserDto) {
     return this.authService.login(

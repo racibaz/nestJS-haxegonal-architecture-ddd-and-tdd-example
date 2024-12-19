@@ -19,12 +19,12 @@ export class AccessTokenGuard implements CanActivate {
     private readonly jwtConfiguration: ConfigType<typeof jwtConfig>,
   ) {}
 
-  async canActivate(context: ExecutionContext): Promise<boolean> {
+  public async canActivate(context: ExecutionContext): Promise<boolean> {
     // Extract the request from the execution context
     const request = context.switchToHttp().getRequest();
     // Extract the token from the header
     const token = this.extractTokenFromHeader(request);
-    console.log(token);
+    //check the token is available
     if (!token) {
       throw new UnauthorizedException();
     }
