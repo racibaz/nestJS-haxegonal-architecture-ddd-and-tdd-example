@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UsersController } from '../presenters/http/users.controller';
 import { UserFactory } from '../domain/factories/user.factory';
@@ -7,6 +7,9 @@ import { HasherService } from '../../auth/application/hasher-service';
 import { UserEntity } from '../infrastructure/persistence/orm/entities/user.entity';
 import { User } from '../domain/user';
 import { UserMapper } from '../infrastructure/persistence/orm/mappers/user.mapper';
+import { ConfigModule } from '@nestjs/config';
+import jwtConfig from '../../auth/config/jwt.config';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   controllers: [UsersController],
@@ -18,7 +21,11 @@ import { UserMapper } from '../infrastructure/persistence/orm/mappers/user.mappe
     UserEntity,
     UserMapper,
   ],
-  imports: [OrmUserPersistenceModule],
+  imports: [
+    OrmUserPersistenceModule,
+    ConfigModule.forFeature(jwtConfig),
+    JwtModule.registerAsync(jwtConfig.asProvider()),
+  ],
   exports: [
     OrmUserPersistenceModule,
     UserFactory,

@@ -15,6 +15,10 @@ import { AuthModule } from './modules/auth/application/auth.module';
 import appConfig from './config/app.config';
 import databaseConfig from './config/database.config';
 import environmentValidation from './config/environment.validation';
+import { APP_GUARD } from '@nestjs/core';
+import { AccessTokenGuard } from './modules/auth/application/guards/access-token/access-token.guard';
+import { JwtModule } from '@nestjs/jwt';
+import jwtConfig from './modules/auth/config/jwt.config';
 
 // Get the current NODE_ENV
 const ENV = process.env.NODE_ENV;
@@ -31,9 +35,18 @@ const ENV = process.env.NODE_ENV;
     }),
     UsersModule,
     AuthModule,
+    ConfigModule.forFeature(jwtConfig),
+    JwtModule.registerAsync(jwtConfig.asProvider()),
   ],
   controllers: [AppController],
-  providers: [AppService, UsersService],
+  providers: [
+    AppService,
+    UsersService,
+    {
+      provide: APP_GUARD,
+      useClass: AccessTokenGuard,
+    },
+  ],
 })
 export class AppModule {
   static register(options: ApplicationBootstrapOptions) {

@@ -11,29 +11,30 @@ export class UsersService {
     private readonly userFactory: UserFactory,
   ) {}
 
-  create(createUserCommand: CreateUserCommand) {
+  public create(createUserCommand: CreateUserCommand) {
     const user = this.userFactory.create(
       createUserCommand.name,
       createUserCommand.email,
       createUserCommand.password,
     );
+
     //todo it should make hashing password
     return this.userRepository.save(user);
   }
 
-  findAll() {
+  public findAll() {
     return this.userRepository.findAll();
   }
 
-  findOne(id: number) {
+  public findOne(id: number) {
     return `This action returns a #${id} post`;
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
+  public update(id: number, updateUserDto: UpdateUserDto) {
     return `This action updates a #${id} post`;
   }
 
-  remove(id: number) {
+  public remove(id: number) {
     return `This action removes a #${id} post`;
   }
 }
