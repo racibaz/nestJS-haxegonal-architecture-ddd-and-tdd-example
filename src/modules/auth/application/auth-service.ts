@@ -1,6 +1,5 @@
 import {
   forwardRef,
-  HttpCode,
   HttpException,
   HttpStatus,
   Inject,
@@ -17,6 +16,7 @@ import { HashingProvider } from './ports/hashing.provider';
 import { JwtService } from '@nestjs/jwt';
 import jwtConfig from '../config/jwt.config';
 import { ConfigType } from '@nestjs/config';
+import { User } from '../../users/domain/user';
 
 @Injectable()
 export class AuthService {
@@ -30,7 +30,9 @@ export class AuthService {
     private readonly jwtConfiguration: ConfigType<typeof jwtConfig>,
   ) {}
 
-  public async register(registerUserCommand: RegisterUserCommand) {
+  public async register(
+    registerUserCommand: RegisterUserCommand,
+  ): Promise<User> {
     const isUserExist = await this.authRepository.isUserExist(
       registerUserCommand.email,
     );
@@ -43,13 +45,23 @@ export class AuthService {
       registerUserCommand.password,
     );
 
-    const user = this.userFactory.create(
+    const userData: User = this.userFactory.create(
       registerUserCommand.name,
       registerUserCommand.email,
       registerUserCommand.password,
     );
 
-    return await this.authRepository.save(user);
+    let user: User | undefined = undefined;
+
+    try {
+      user = await this.authRepository.save(userData);
+    } catch (error) {
+      throw new RequestTimeoutException(error, {
+        description: 'User already exists',
+      });
+    }
+
+    return user;
   }
 
   public async login(loginUserCommand: LoginUserCommand) {

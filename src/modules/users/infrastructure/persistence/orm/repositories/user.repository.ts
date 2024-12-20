@@ -13,12 +13,12 @@ export class OrmUserRepository implements UserRepository {
     private readonly userRepository: Repository<UserEntity>,
   ) {}
 
-  async findAll(): Promise<User[]> {
-    const entities = await this.userRepository.find();
+  public async findAll(): Promise<User[]> {
+    const entities: UserEntity[] = await this.userRepository.find();
     return entities.map((item) => UserMapper.toDomain(item));
   }
 
-  async save(user: User): Promise<User> {
+  public async save(user: User): Promise<User> {
     const persistenceModel = UserMapper.toPersistence(user);
     const newEntity = await this.userRepository.save(persistenceModel);
     return UserMapper.toDomain(newEntity);

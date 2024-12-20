@@ -1,4 +1,11 @@
-import { Body, Controller, HttpCode, HttpStatus, Post, SetMetadata, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  HttpCode,
+  HttpStatus,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthService } from '../../application/auth-service';
 import { RegisterUserDto } from './dto/register-user.dto';
 import { RegisterUserCommand } from '../../application/commands/register-user.command';
@@ -15,8 +22,8 @@ export class AuthController {
   @Post('register')
   @UseGuards(ThrottlerGuard)
   @Auth(AuthType.None)
-  public register(@Body() registerUserDto: RegisterUserDto) {
-    return this.authService.register(
+  public async register(@Body() registerUserDto: RegisterUserDto) {
+    return await this.authService.register(
       new RegisterUserCommand(
         registerUserDto.name,
         registerUserDto.email,
