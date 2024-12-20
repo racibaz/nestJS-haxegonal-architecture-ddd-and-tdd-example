@@ -20,6 +20,7 @@ import { AccessTokenGuard } from './modules/auth/application/guards/access-token
 import { JwtModule } from '@nestjs/jwt';
 import jwtConfig from './modules/auth/config/jwt.config';
 import { AuthenticationGuard } from './modules/auth/application/guards/authentication/authentication.guard';
+import { ThrottlerModule } from '@nestjs/throttler';
 
 // Get the current NODE_ENV
 const ENV = process.env.NODE_ENV;
@@ -27,6 +28,12 @@ const ENV = process.env.NODE_ENV;
 @Module({
   imports: [
     CoreModule,
+    ThrottlerModule.forRoot([
+      {
+        ttl: 60000,
+        limit: 5,
+      },
+    ]),
     ConfigModule.forRoot({
       isGlobal: true,
       //envFilePath: ['.env.development', '.env'],
