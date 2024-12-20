@@ -1,27 +1,31 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger, LoggerService } from '@nestjs/common';
 import { UpdateUserDto } from '../presenters/http/dto/update-user.dto';
 import { CreateUserCommand } from './commands/create-user.command';
 import { UserRepository } from './ports/user.repository';
 import { UserFactory } from '../domain/factories/user.factory';
 import { ActiveUser } from '../../auth/application/decorators/auth/active-user.decorator';
 import { ActiveUserData } from '../../auth/application/ports/active-user-data.interface';
+import { User } from '../domain/user';
 
 @Injectable()
 export class UsersService {
   constructor(
     private readonly userRepository: UserRepository,
     private readonly userFactory: UserFactory,
+    private readonly logger: Logger,
   ) {}
 
-  public create(createUserCommand: CreateUserCommand) {
-    const user = this.userFactory.create(
+  public async create(createUserCommand: CreateUserCommand) {
+    const userData: User = this.userFactory.create(
       createUserCommand.name,
       createUserCommand.email,
       createUserCommand.password,
     );
 
     //todo it should make hashing password
-    return this.userRepository.save(user);
+    const user: User = await this.userRepository.save(userData);
+    this.logger.log(`${user.email} is added.`);
+    return user;
   }
 
   public findAll() {

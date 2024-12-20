@@ -6,7 +6,7 @@ import { HasherService } from '../../auth/application/hasher-service';
 import { UserEntity } from '../infrastructure/persistence/orm/entities/user.entity';
 import { User } from '../domain/user';
 import { UserMapper } from '../infrastructure/persistence/orm/mappers/user.mapper';
-import { Module } from '@nestjs/common';
+import { Logger, Module } from '@nestjs/common';
 
 @Module({
   controllers: [UsersController],
@@ -17,6 +17,7 @@ import { Module } from '@nestjs/common';
     User,
     UserEntity,
     UserMapper,
+    Logger,
   ],
   imports: [OrmUserPersistenceModule],
   exports: [
@@ -25,6 +26,7 @@ import { Module } from '@nestjs/common';
     User,
     UserEntity,
     UserMapper,
+    Logger,
   ],
 })
 export class UsersModule {}
