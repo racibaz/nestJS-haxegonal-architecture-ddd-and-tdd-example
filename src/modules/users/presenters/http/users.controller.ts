@@ -15,7 +15,9 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { ActiveUser } from '../../../auth/application/decorators/auth/active-user.decorator';
 import { ActiveUserData } from '../../../auth/application/ports/active-user-data.interface';
 import { ThrottlerGuard } from '@nestjs/throttler';
+import { ApiResponse, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Users')
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
@@ -31,6 +33,10 @@ export class UsersController {
     );
   }
 
+  @ApiResponse({
+    status: 200,
+    description: 'Users fetched successfully based on the query',
+  })
   @Get()
   @UseGuards(ThrottlerGuard)
   public findAll() {
