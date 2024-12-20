@@ -5,7 +5,8 @@ import {
   Get,
   Param,
   Patch,
-  Post, UseGuards,
+  Post,
+  UseGuards,
 } from '@nestjs/common';
 import { UsersService } from '../../application/users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -13,7 +14,7 @@ import { CreateUserCommand } from '../../application/commands/create-user.comman
 import { UpdateUserDto } from './dto/update-user.dto';
 import { ActiveUser } from '../../../auth/application/decorators/auth/active-user.decorator';
 import { ActiveUserData } from '../../../auth/application/ports/active-user-data.interface';
-import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
+import { ThrottlerGuard } from '@nestjs/throttler';
 
 @Controller('users')
 export class UsersController {
@@ -30,8 +31,8 @@ export class UsersController {
     );
   }
 
-  @UseGuards(ThrottlerGuard)
   @Get()
+  @UseGuards(ThrottlerGuard)
   public findAll() {
     return this.usersService.findAll();
   }
