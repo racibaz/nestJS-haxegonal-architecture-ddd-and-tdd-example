@@ -11,6 +11,8 @@ import { UsersService } from '../../application/users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { CreateUserCommand } from '../../application/commands/create-user.command';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { ActiveUser } from '../../../auth/application/decorators/auth/active-user.decorator';
+import { ActiveUserData } from '../../../auth/application/ports/active-user-data.interface';
 
 @Controller('users')
 export class UsersController {
@@ -38,12 +40,12 @@ export class UsersController {
   }
 
   @Patch(':id')
-  public update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(+id, updateUserDto);
+  public update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto, @ActiveUser() activeUser: ActiveUserData) {
+    return this.usersService.update(+id, updateUserDto, activeUser);
   }
 
   @Delete(':id')
-  public remove(@Param('id') id: string) {
-    return this.usersService.remove(+id);
+  public remove(@Param('id') id: string,  @ActiveUser() activeUser: ActiveUserData,) {
+    return this.usersService.remove(+id, activeUser);
   }
 }
