@@ -3,6 +3,8 @@ import { UpdateUserDto } from '../presenters/http/dto/update-user.dto';
 import { CreateUserCommand } from './commands/create-user.command';
 import { UserRepository } from './ports/user.repository';
 import { UserFactory } from '../domain/factories/user.factory';
+import { ActiveUser } from '../../auth/application/decorators/auth/active-user.decorator';
+import { ActiveUserData } from '../../auth/application/ports/active-user-data.interface';
 
 @Injectable()
 export class UsersService {
@@ -30,11 +32,17 @@ export class UsersService {
     return `This action returns a #${id} post`;
   }
 
-  public update(id: number, updateUserDto: UpdateUserDto) {
+  public update(
+    id: number,
+    updateUserDto: UpdateUserDto,
+    @ActiveUser() activeUser: ActiveUserData,
+  ) {
+    console.log(activeUser);
     return `This action updates a #${id} post`;
   }
 
-  public remove(id: number) {
+  public remove(id: number, @ActiveUser() activeUser: ActiveUserData) {
+    console.log(activeUser);
     return `This action removes a #${id} post`;
   }
 }
