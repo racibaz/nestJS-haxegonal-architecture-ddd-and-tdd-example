@@ -13,7 +13,7 @@ export class OrmAuthRepository implements AuthRepository {
     private readonly authRepository: Repository<UserEntity>,
   ) {}
 
-  public async findByOneEmail(email: string): Promise<UserEntity | null> {
+  public async findOneByEmail(email: string): Promise<UserEntity | null> {
     return await this.authRepository.findOne({ where: { email } });
   }
 

@@ -65,7 +65,7 @@ export class AuthService {
   }
 
   public async login(loginUserCommand: LoginUserCommand) {
-    const user: UserEntity | null = await this.authRepository.findByOneEmail(
+    const user: UserEntity | null = await this.authRepository.findOneByEmail(
       loginUserCommand.email,
     );
 

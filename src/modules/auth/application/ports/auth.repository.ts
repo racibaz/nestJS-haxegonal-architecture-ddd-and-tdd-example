@@ -3,6 +3,6 @@ import { UserEntity } from '../../../users/infrastructure/persistence/orm/entiti
 
 export abstract class AuthRepository {
   abstract isUserExist(email: string): Promise<boolean>;
-  abstract findByOneEmail(email: string): Promise<UserEntity | null>;
+  abstract findOneByEmail(email: string): Promise<UserEntity | null>;
   abstract save(user: User): Promise<User>;
 }
