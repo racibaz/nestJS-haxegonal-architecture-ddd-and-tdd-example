@@ -1,5 +1,5 @@
 import { Injectable, Logger, LoggerService } from '@nestjs/common';
-import { UpdateUserDto } from '../presenters/http/dto/update-user.dto';
+import { UpdateUserRequestDto } from '../presenters/http/dto/update-user.request-dto';
 import { CreateUserCommand } from './commands/create-user.command';
 import { UserRepository } from './ports/user.repository';
 import { UserFactory } from '../domain/factories/user.factory';
@@ -32,21 +32,21 @@ export class UsersService {
     return this.userRepository.findAll();
   }
 
-  public findOne(id: number) {
-    return `This action returns a #${id} post`;
+  public findOne(id: string) {
+    return this.userRepository.findBy(id);
   }
 
-  public update(
-    id: number,
-    updateUserDto: UpdateUserDto,
+  public async update(
+    id: string,
+    updateUserDto: UpdateUserRequestDto,
     @ActiveUser() activeUser: ActiveUserData,
   ) {
     console.log(activeUser);
-    return `This action updates a #${id} post`;
+    return await this.userRepository.update(id, updateUserDto);
   }
 
-  public remove(id: number, @ActiveUser() activeUser: ActiveUserData) {
+  public async remove(id: string, @ActiveUser() activeUser: ActiveUserData) {
     console.log(activeUser);
-    return `This action removes a #${id} post`;
+    return await this.userRepository.delete(id);
   }
 }
