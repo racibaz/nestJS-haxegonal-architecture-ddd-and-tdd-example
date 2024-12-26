@@ -40,7 +40,6 @@ export class OrmUserRepository implements UserRepository {
     id: string,
     updateUserRequestDto: UpdateUserRequestDto,
   ): Promise<User> {
-
     throw new Error('Method not implemented.');
   }
 
@@ -52,6 +51,8 @@ export class OrmUserRepository implements UserRepository {
     if (!entity) {
       throw new NotFoundException(`User with id ${id} not found`);
     }
-    return await this.userRepository.remove(entity);
+
+    const userEntity: UserEntity = await this.userRepository.remove(entity);
+    return UserMapper.toDomain(userEntity);
   }
 }
