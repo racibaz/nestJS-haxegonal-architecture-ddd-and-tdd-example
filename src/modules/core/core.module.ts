@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
-import { ApplicationBootstrapOptions } from '../posts/common/interface/application-bootstap-options';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ApplicationBootstrapOptions } from './common/interfaces/application-bootstap-options';
 
 @Module({})
 export class CoreModule {
@@ -8,14 +9,22 @@ export class CoreModule {
     const imports =
       options.driver === 'orm'
         ? [
-            TypeOrmModule.forRoot({
-              type: 'postgres',
-              host: '127.0.0.1',
-              port: 5432,
-              password: 'postgres',
-              username: 'postgres',
-              autoLoadEntities: true,
-              synchronize: true,
+            TypeOrmModule.forRootAsync({
+              imports: [ConfigModule],
+              inject: [ConfigService],
+              useFactory: (configService: ConfigService) => ({
+                type: 'postgres',
+                //entities: [User],
+                synchronize: configService.get('database.synchronize'),
+                port: configService.get('database.port'),
+                username: configService.get('database.user'),
+                password: configService.get('database.password'),
+                host: configService.get('database.host'),
+                autoLoadEntities: configService.get(
+                  'database.autoLoadEntities',
+                ),
+                database: configService.get('database.name'),
+              }),
             }),
           ]
         : [];

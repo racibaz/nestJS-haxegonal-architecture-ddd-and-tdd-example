@@ -5,7 +5,6 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { PostsModule } from './modules/posts/application/posts.module';
 import { CoreModule } from './modules/core/core.module';
-import { ApplicationBootstrapOptions } from './modules/posts/common/interface/application-bootstap-options';
 import { PostsInfrastructureModule } from './modules/posts/infrastructure/posts-infrastructure.module';
 import { ConfigModule } from '@nestjs/config';
 import { UsersService } from './modules/users/application/users.service';
@@ -21,6 +20,7 @@ import { JwtModule } from '@nestjs/jwt';
 import jwtConfig from './modules/auth/config/jwt.config';
 import { AuthenticationGuard } from './modules/auth/application/guards/authentication/authentication.guard';
 import { ThrottlerModule } from '@nestjs/throttler';
+import { ApplicationBootstrapOptions } from './modules/core/common/interfaces/application-bootstap-options';
 
 // Get the current NODE_ENV
 const ENV = process.env.NODE_ENV;
