@@ -18,23 +18,11 @@ import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UpdateUserRequestDto } from './dto/update-user.request-dto';
 import { UsersResponseDto } from './dto/users.response-dto';
 import { plainToInstance } from 'class-transformer';
-import { User } from '../../domain/user';
 
 @ApiTags('Users')
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
-
-  @Post()
-  public create(@Body() createUserDto: CreateUserRequestDto) {
-    return this.usersService.create(
-      new CreateUserCommand(
-        createUserDto.name,
-        createUserDto.email,
-        createUserDto.password,
-      ),
-    );
-  }
 
   @ApiResponse({
     status: 200,
@@ -42,14 +30,24 @@ export class UsersController {
   })
   @Get()
   @UseGuards(ThrottlerGuard)
-  public async findAll(): Promise<UsersResponseDto[]> {
+  public async index(): Promise<UsersResponseDto[]> {
     return plainToInstance(UsersResponseDto, await this.usersService.findAll());
   }
 
   @Get(':id')
-  public findOne(@Param('id') id: string) {
-    console.log(this.usersService.findOne(id));
+  public show(@Param('id') id: string) {
     return plainToInstance(UsersResponseDto, this.usersService.findOne(id));
+  }
+
+  @Post()
+  public store(@Body() createUserDto: CreateUserRequestDto) {
+    return this.usersService.create(
+      new CreateUserCommand(
+        createUserDto.name,
+        createUserDto.email,
+        createUserDto.password,
+      ),
+    );
   }
 
   @Patch(':id')
@@ -65,10 +63,13 @@ export class UsersController {
   }
 
   @Delete(':id')
-  public remove(
+  public destroy(
     @Param('id') id: string,
     @ActiveUser() activeUser: ActiveUserData,
-  ) {
-    return this.usersService.remove(id, activeUser);
+  ): UsersResponseDto {
+    return plainToInstance(
+      UsersResponseDto,
+      this.usersService.remove(id, activeUser),
+    );
   }
 }
