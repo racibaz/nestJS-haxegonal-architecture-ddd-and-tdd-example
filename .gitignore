@@ -36,22 +36,17 @@ lerna-debug.log*
 !.vscode/launch.json
 !.vscode/extensions.json
 
-# dotenv environment variable files
-.env
-.env.development.local
-.env.test.local
-.env.production.local
-.env.local
+pgdata
 
-# temp directory
-.temp
-.tmp
+# env files
+*.env
+*.env.*
+/.env.development
+/.env.test
 
-# Runtime data
-pids
-*.pid
-*.seed
-*.pid.lock
+# lock files
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
 
-# Diagnostic reports (https://nodejs.org/api/report.html)
-report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+
