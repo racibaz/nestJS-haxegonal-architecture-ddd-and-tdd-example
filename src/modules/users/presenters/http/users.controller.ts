@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { UsersService } from '../../application/users.service';
@@ -18,6 +19,7 @@ import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UpdateUserRequestDto } from './dto/update-user.request-dto';
 import { UsersResponseDto } from './dto/users.response-dto';
 import { plainToInstance } from 'class-transformer';
+import { GenericFilterDto } from '../../../core/application/ports/generic-filter.dto';
 
 @ApiTags('Users')
 @Controller('users')
@@ -30,8 +32,13 @@ export class UsersController {
   })
   @Get()
   @UseGuards(ThrottlerGuard)
-  public async index(): Promise<UsersResponseDto[]> {
-    return plainToInstance(UsersResponseDto, await this.usersService.findAll());
+  public async index(
+    @Query() filter: GenericFilterDto,
+  ): Promise<UsersResponseDto[]> {
+    return plainToInstance(
+      UsersResponseDto,
+      await this.usersService.findAll(filter),
+    );
   }
 
   @Get(':id')

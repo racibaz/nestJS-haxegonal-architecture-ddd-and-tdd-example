@@ -6,6 +6,8 @@ import { UserFactory } from '../domain/factories/user.factory';
 import { ActiveUser } from '../../auth/application/decorators/auth/active-user.decorator';
 import { ActiveUserData } from '../../auth/application/ports/active-user-data.interface';
 import { User } from '../domain/user';
+import { PaginationQueryDto } from '../../core/presenters/http/dto/pagination-query';
+import { GenericFilterDto } from '../../core/application/ports/generic-filter.dto';
 
 @Injectable()
 export class UsersService {
@@ -28,8 +30,8 @@ export class UsersService {
     return user;
   }
 
-  public findAll() {
-    return this.userRepository.findAll();
+  public findAll(filter: GenericFilterDto) {
+    return this.userRepository.findAll(filter);
   }
 
   public findOne(id: string) {

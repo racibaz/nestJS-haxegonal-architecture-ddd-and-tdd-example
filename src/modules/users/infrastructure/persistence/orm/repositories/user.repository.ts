@@ -6,6 +6,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../../../../domain/user';
 import { UserMapper } from '../mappers/user.mapper';
 import { UpdateUserRequestDto } from 'src/modules/users/presenters/http/dto/update-user.request-dto';
+import { PaginationQueryDto } from '../../../../../core/presenters/http/dto/pagination-query';
+import { GenericFilterDto } from '../../../../../core/application/ports/generic-filter.dto';
+import { fi } from '@faker-js/faker';
 
 @Injectable()
 export class OrmUserRepository implements UserRepository {
@@ -25,8 +28,11 @@ export class OrmUserRepository implements UserRepository {
     return UserMapper.toDomain(entity);
   }
 
-  public async findAll(): Promise<User[]> {
-    const entities: UserEntity[] = await this.userRepository.find();
+  public async findAll(filter: GenericFilterDto): Promise<User[]> {
+    const entities: UserEntity[] = await this.userRepository.find({
+      take: filter.limit,
+      skip: (filter.page - 1) * filter.limit,
+    });
     return entities.map((item) => UserMapper.toDomain(item));
   }
 
