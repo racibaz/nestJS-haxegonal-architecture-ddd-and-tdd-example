@@ -6,9 +6,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../../../../domain/user';
 import { UserMapper } from '../mappers/user.mapper';
 import { UpdateUserRequestDto } from 'src/modules/users/presenters/http/dto/update-user.request-dto';
-import { PaginationQueryDto } from '../../../../../core/presenters/http/dto/pagination-query';
 import { GenericFilterDto } from '../../../../../core/application/ports/generic-filter.dto';
-import { fi } from '@faker-js/faker';
 
 @Injectable()
 export class OrmUserRepository implements UserRepository {
